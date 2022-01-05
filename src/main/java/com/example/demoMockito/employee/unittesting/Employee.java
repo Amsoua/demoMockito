@@ -23,6 +23,8 @@ public class Employee {
         this.name = name;
     }
 
+    public Employee( ) {
+    }
     // standard getters and setters, constructors
 
 

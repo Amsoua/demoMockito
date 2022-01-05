@@ -33,6 +33,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void deleteEmployee(Employee employee) {
-
+            employeeRepository.delete(employee);
     }
 }

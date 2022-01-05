@@ -1,45 +1,51 @@
 package com.example.demoMockito.employee.unittesting;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
+@WebMvcTest(EmployeeRestController.class)
 @AutoConfigureMockMvc
-//@ComponentScan(basePackages = {"com.example.demoMockito.employee"})
-@SpringBootTest
-//@WebMvcTest(EmployeeRestController.class)
 public class EmployeeRestControllerIntegrationTest {
 
-    @Autowired
+    @InjectMocks EmployeeRestController controller;
+
     private MockMvc mvc;
 
-    @MockBean
+    @Mock
     private EmployeeService service;
 
-
+   @Before
+   public void setUp(){
+       MockitoAnnotations.openMocks(this);
+       mvc = MockMvcBuilders.standaloneSetup(this.controller).build();
+   }
     // write test cases here
 
     @Test
@@ -50,9 +56,10 @@ public class EmployeeRestControllerIntegrationTest {
 
         List<Employee> allEmployees = Arrays.asList(alex);
 
-        given(service.getAllEmployeees()).willReturn(allEmployees);
+        when(service.getAllEmployeees()).thenReturn(allEmployees);
 
-        this.mvc.perform(get("/api/employees")
+
+        mvc.perform(get("/api/employees")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -60,13 +67,19 @@ public class EmployeeRestControllerIntegrationTest {
     }
 
     @Test
-    public void createEmployeeAPI() throws Exception
-    {
+    public void createEmployeeAPI() throws Exception {
+
+       Employee alex = new Employee(1L,"alex");
+
+       //when(service.saveEmployee(alex)).thenReturn(alex);
+
+       ObjectMapper objectMapper = new ObjectMapper();
+       
         mvc.perform( MockMvcRequestBuilders
                 .post("/api/employees")
-                .content(asJsonString(new Employee((long) 1,"Amadou")))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(alex))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
     }
