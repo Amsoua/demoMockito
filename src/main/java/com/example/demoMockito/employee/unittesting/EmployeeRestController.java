@@ -5,11 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+
 public class EmployeeRestController {
 
     @Autowired
@@ -21,7 +22,7 @@ public class EmployeeRestController {
     }
 
     @PostMapping(value = "/employees")
-    public ResponseEntity<Employee> addEmployee (@Valid @RequestBody Employee employee)
+    public ResponseEntity<Employee> addEmployee ( @RequestBody Employee employee)
     {
         //code
         employeeService.saveEmployee(employee);
