@@ -1,8 +1,10 @@
 package com.example.demoMockito.employee.unittesting;
 
+
+
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -12,7 +14,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,27 +31,24 @@ public class EmployeeServiceImplIntegrationTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-    }
-
-    @Before
-    public void setUp() {
-
         Employee alex = new Employee("alex");
         Mockito.when(employeeRepository.findByName(alex.getName()))
                 .thenReturn(alex);
     }
 
+
     @Test
-    public void whenValidName_thenEmployeeShouldBeFound() {
+    void whenValidName_thenEmployeeShouldBeFound() {
         String name = "alex";
         Employee found = testedClass.getEmployeeByName(name);
 
         assertThat(found.getName())
                 .isEqualTo(name);
+
     }
 
     @Test
-    public void whenFindAll_thenOk()
+    void whenFindAll_thenOk()
     {
         List<Employee> list = new ArrayList<Employee>();
         Employee empOne = new Employee( "John");
@@ -73,7 +71,7 @@ public class EmployeeServiceImplIntegrationTest {
 
 
     @Test
-    public void givenAnEmployee_whenSave_thenOk()
+    void givenAnEmployee_whenSave_thenOk()
     {
         Employee employee = new Employee("Gupta");
 
@@ -83,7 +81,7 @@ public class EmployeeServiceImplIntegrationTest {
     }
 
     @Test
-    public void givenAnEmployee_whenUpdate_thenOk()
+    void givenAnEmployee_whenUpdate_thenOk()
     {
         Employee employee = new Employee("Gupta");
 
@@ -93,7 +91,7 @@ public class EmployeeServiceImplIntegrationTest {
     }
 
     @Test
-    public void givenExistingEmployee_whenDeleteEmployee_thenOk()
+    void givenExistingEmployee_whenDeleteEmployee_thenOk()
     {
 
         Employee employee = new Employee("Gupta");
